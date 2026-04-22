@@ -1,11 +1,11 @@
 {
-  "name": "Mon Calendrier",
-  "short_name": "Calendrier",
+  "name": "Mon Pilulier",
+  "short_name": "Pilulier",
   "start_url": "/Calendar/",
   "scope": "/Calendar/",
   "display": "standalone",
-  "background_color": "#f5f0e8",
-  "theme_color": "#4a3f35",
+  "background_color": "#F2E8D9",
+  "theme_color": "#C8B59A",
   "orientation": "portrait",
   "icons": [
     {
