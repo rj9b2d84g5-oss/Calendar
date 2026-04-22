@@ -25,45 +25,45 @@ export default function App() {
 
   const dateKey = (y, m, d) => `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 
-  const loadEvents = useCallback(async () => {
+  const loadEvents = useCallback(() => {
     try {
-      const r = await window.storage.get("calendar-beige-v1", true);
-      if (r?.value) setEvents(JSON.parse(r.value));
+      const raw = localStorage.getItem("calendar-beige-v1");
+      if (raw) setEvents(JSON.parse(raw));
     } catch {}
   }, []);
 
-  const saveEvents = useCallback(async (evts) => {
+  const saveEvents = useCallback((evts) => {
     try {
-      await window.storage.set("calendar-beige-v1", JSON.stringify(evts), true);
+      localStorage.setItem("calendar-beige-v1", JSON.stringify(evts));
       setLastSync(new Date());
     } catch {}
   }, []);
 
   useEffect(() => {
     loadEvents();
-    const iv = setInterval(async () => {
+    const iv = setInterval(() => {
       try {
-        const r = await window.storage.get("calendar-beige-v1", true);
-        if (r?.value) { setEvents(JSON.parse(r.value)); setLastSync(new Date()); }
+        const raw = localStorage.getItem("calendar-beige-v1");
+        if (raw) { setEvents(JSON.parse(raw)); setLastSync(new Date()); }
       } catch {}
     }, 3000);
     return () => clearInterval(iv);
   }, [loadEvents]);
 
-  const addEvent = async () => {
+  const addEvent = () => {
     if (!newTitle.trim()) return;
     const key = modal.date;
     const updated = { ...events, [key]: [...(events[key]||[]), { id: Date.now(), title: newTitle.trim(), color: newColor }] };
     setEvents(updated);
-    await saveEvents(updated);
+    saveEvents(updated);
     setNewTitle(""); setNewColor(EVENT_COLORS[0].color);
     setModal({ ...modal });
   };
 
-  const removeEvent = async (key, id) => {
+  const removeEvent = (key, id) => {
     const updated = { ...events, [key]: (events[key]||[]).filter(e => e.id !== id) };
     if (!updated[key]?.length) delete updated[key];
-    setEvents(updated); await saveEvents(updated);
+    setEvents(updated); saveEvents(updated);
   };
 
   const prevMonth = () => setCur(c => c.m === 0 ? {y:c.y-1,m:11} : {y:c.y,m:c.m-1});
